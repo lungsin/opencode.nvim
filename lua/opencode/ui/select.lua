@@ -65,7 +65,7 @@ function M.select(opts)
         for name, description in pairs(opts.commands) do
           table.insert(command_items, {
             __type = "command",
-            name = name, -- TODO: Truncate if it'd run into `text`
+            name = name,
             text = description,
             highlights = { { description, "Comment" } },
             preview = {
@@ -83,6 +83,7 @@ function M.select(opts)
 
       -- Server section
       if opts.server then
+        local config = require("opencode.config")
         table.insert(items, { __group = true, name = "SERVER", preview = { text = "" } })
         table.insert(items, {
           __type = "server",
@@ -91,27 +92,33 @@ function M.select(opts)
           highlights = { { "Select local server", "Comment" } },
           preview = { text = "" },
         })
-        table.insert(items, {
-          __type = "server",
-          name = "server.start",
-          text = "Start server",
-          highlights = { { "Start configured server", "Comment" } },
-          preview = { text = "" },
-        })
-        table.insert(items, {
-          __type = "server",
-          name = "server.stop",
-          text = "Stop server",
-          highlights = { { "Stop configured server", "Comment" } },
-          preview = { text = "" },
-        })
-        table.insert(items, {
-          __type = "server",
-          name = "server.toggle",
-          text = "Toggle server",
-          highlights = { { "Toggle configured server", "Comment" } },
-          preview = { text = "" },
-        })
+        if config.opts.server.start then
+          table.insert(items, {
+            __type = "server",
+            name = "server.start",
+            text = "Start server",
+            highlights = { { "Start configured server", "Comment" } },
+            preview = { text = "" },
+          })
+        end
+        if config.opts.server.stop then
+          table.insert(items, {
+            __type = "server",
+            name = "server.stop",
+            text = "Stop server",
+            highlights = { { "Stop configured server", "Comment" } },
+            preview = { text = "" },
+          })
+        end
+        if config.opts.server.toggle then
+          table.insert(items, {
+            __type = "server",
+            name = "server.toggle",
+            text = "Toggle server",
+            highlights = { { "Toggle configured server", "Comment" } },
+            preview = { text = "" },
+          })
+        end
       end
 
       for i, item in ipairs(items) do
