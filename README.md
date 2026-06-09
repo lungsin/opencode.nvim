@@ -90,17 +90,16 @@ programs.nixvim = {
 
 `opencode.nvim` replaces placeholders in prompts with the corresponding context:
 
-| Placeholder    | Context                                                         |
-| -------------- | --------------------------------------------------------------- |
-| `@this`        | Operator range or visual selection if any, else cursor position |
-| `@buffer`      | Current buffer                                                  |
-| `@buffers`     | Open buffers                                                    |
-| `@visible`     | Visible text                                                    |
-| `@diagnostics` | Current buffer diagnostics                                      |
-| `@quickfix`    | Quickfix list                                                   |
-| `@diff`        | Git diff                                                        |
-| `@marks`       | Global marks                                                    |
-| `@grapple`     | [grapple.nvim](https://github.com/cbochs/grapple.nvim) tags     |
+| Placeholder    | Context                                                                      |
+| -------------- | ---------------------------------------------------------------------------- |
+| `@this`        | Range or selection if any, else cursor position                              |
+| `@buffer`      | Current buffer                                                               |
+| `@buffers`     | Open buffers                                                                 |
+| `@visible`     | Visible text                                                                 |
+| `@diagnostics` | Current buffer diagnostics, or overlapping the range or selection if present |
+| `@quickfix`    | Quickfix list                                                                |
+| `@diff`        | Git diff                                                                     |
+| `@marks`       | Global marks                                                                 |
 
 > [!TIP]
 > `opencode` reads referenced files from disk — save your changes!

@@ -3,12 +3,11 @@
 local NS_ID = vim.api.nvim_create_namespace("OpencodeContext")
 
 ---The context a prompt is being made in.
----Particularly useful when inputting or selecting a prompt
----because that changes the active mode, window, etc.
+---Particularly useful when inputting or selecting a prompt, which changes the active mode, window, etc.
 ---So this stores state prior to that.
 ---@class opencode.Context
----@field win integer
 ---@field buf integer
+---@field win integer
 ---@field cursor integer[] The cursor positon. { row, col } (1,0-based).
 ---@field range? opencode.context.Range The operator range or visual selection range.
 local Context = {}
@@ -94,7 +93,7 @@ Context.current = nil
 function Context.new(range)
   local self = setmetatable({}, Context)
   self.win = vim.api.nvim_get_current_win()
-  self.buf = vim.api.nvim_get_current_buf()
+  self.buf = vim.api.nvim_win_get_buf(self.win)
   self.cursor = vim.api.nvim_win_get_cursor(self.win)
   self.range = range or selection(self.buf)
 
@@ -354,7 +353,7 @@ function Context:this()
   end
 end
 
----The current buffer.
+---The buffer.
 function Context:buffer()
   return Context.format(self.buf)
 end
@@ -406,14 +405,40 @@ function Context.format_diagnostic(diagnostic)
   return string.format(
     "%s (%s): %s",
     location,
-    diagnostic.source or "unknown source",
-    diagnostic.message:gsub("%s+", " "):gsub("^%s", ""):gsub("%s$", "")
+    diagnostic.source or "unknown",
+    vim.trim(diagnostic.message:gsub("%s+", " "))
   )
 end
 
----Diagnostics for the current buffer.
+---Diagnostics for the buffer, or overlapping the range if present.
 function Context:diagnostics()
   local diagnostics = vim.diagnostic.get(self.buf)
+
+  if self.range then
+    local from_line = self.range.from[1] - 1
+    local to_line = self.range.to[1] - 1
+    local from_col = self.range.from[2]
+    local to_col = self.range.to[2]
+
+    diagnostics = vim.tbl_filter(function(d)
+      if d.lnum > to_line or d.end_lnum < from_line then
+        return false
+      end
+
+      local oline = math.max(d.lnum, from_line)
+      local oend = math.min(d.end_lnum, to_line)
+      if oline == oend then
+        local dc1 = (oline == d.lnum) and d.col or 0
+        local dc2 = (oline == d.end_lnum) and d.end_col or math.huge
+        local sc1 = (oline == from_line) and from_col or 0
+        local sc2 = (oline == to_line) and to_col or math.huge
+        return dc1 <= sc2 and dc2 >= sc1
+      end
+
+      return true
+    end, diagnostics)
+  end
+
   if #diagnostics == 0 then
     return nil
   end
@@ -422,7 +447,7 @@ function Context:diagnostics()
     return "- " .. Context.format_diagnostic(diagnostic)
   end, diagnostics)
 
-  return #diagnostics .. " diagnostics:" .. "\n" .. table.concat(diagnostic_strings, "\n")
+  return #diagnostics .. " diagnostic(s):" .. "\n" .. table.concat(diagnostic_strings, "\n")
 end
 
 ---Formatted quickfix list entries.
