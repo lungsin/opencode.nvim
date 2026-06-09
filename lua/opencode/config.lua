@@ -29,10 +29,6 @@ vim.g.opencode_opts = vim.g.opencode_opts
 ---
 ---Options for handling `opencode` events.
 ---@field events? opencode.events.Opts
----
----Options for the in-process LSP that interacts with `opencode`.
----@field lsp? opencode.lsp.Opts
-
 ---@type opencode.Opts
 local defaults = {
   server = {
@@ -127,17 +123,6 @@ local defaults = {
       edits = {
         enabled = true,
       },
-    },
-  },
-  lsp = {
-    enabled = false,
-    filetypes = nil,
-    handlers = {
-      hover = {
-        enabled = true,
-        model = nil,
-      },
-      code_action = { enabled = true },
     },
   },
 }

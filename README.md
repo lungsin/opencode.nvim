@@ -13,7 +13,6 @@ https://github.com/user-attachments/assets/e85e021c-fa8f-466e-830c-c667b28f611e
 - Execute commands
 - Monitor and respond to events
 - Accept/reject and reload edits
-- Interact intuitively via in-process LSP
 - _Vim-y_ — operator and dot-repeat
 - Simple and sensible defaults to get you started quickly
 
@@ -230,18 +229,6 @@ Command `opencode`:
 | `prompt.submit`          | Submit the TUI input                               |
 | `prompt.clear`           | Clear the TUI input                                |
 | `agent.cycle`            | Cycle the selected agent                           |
-
-### LSP
-
-> [!WARNING]
-> This feature is experimental! Try it out with `vim.g.opencode_opts.lsp.enabled = true`.
-
-`opencode.nvim` provides an in-process LSP to interact with `opencode` via the LSP functions you're used to!
-
-| LSP Function | `opencode.nvim` Handler                                                |
-| ------------ | ---------------------------------------------------------------------- |
-| Hover        | Asks `opencode` for a brief explanation of the symbol under the cursor |
-| Code Actions | Asks `opencode` to explain or fix diagnostics under the cursor         |
 
 ## 👀 Events
 
