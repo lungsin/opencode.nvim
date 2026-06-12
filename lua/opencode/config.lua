@@ -47,7 +47,6 @@ local defaults = {
     ["@visible"] = require("opencode.context.builtins").visible_text,
     ["@diagnostics"] = require("opencode.context.builtins").diagnostics,
     ["@quickfix"] = require("opencode.context.builtins").quickfix,
-    ["@diff"] = require("opencode.context.builtins").git_diff,
     ["@marks"] = require("opencode.context.builtins").marks,
   },
   ask = {
@@ -86,7 +85,6 @@ local defaults = {
     prompts = {
       ask = "...",
       diagnostics = "Explain @diagnostics",
-      diff = "Review the following git diff for correctness and readability: @diff",
       document = "Add comments documenting @this",
       explain = "Explain @this and its context",
       fix = "Fix @diagnostics",

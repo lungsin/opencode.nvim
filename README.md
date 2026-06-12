@@ -166,7 +166,6 @@ require("lualine").setup({
 | `@diagnostic`  | Diagnostics within the range or selection if any, else under the cursor |
 | `@diagnostics` | Current buffer diagnostics                                              |
 | `@quickfix`    | Quickfix list                                                           |
-| `@diff`        | Git diff                                                                |
 | `@marks`       | Global marks                                                            |
 
 > [!TIP]
@@ -179,7 +178,6 @@ Select prompts to review, explain, and improve your code:
 | Name          | Prompt                                                                 |
 | ------------- | ---------------------------------------------------------------------- |
 | `diagnostics` | Explain `@diagnostics`                                                 |
-| `diff`        | Review the following git diff for correctness and readability: `@diff` |
 | `document`    | Add comments documenting `@this`                                       |
 | `explain`     | Explain `@this` and its context                                        |
 | `fix`         | Fix `@diagnostics`                                                     |
