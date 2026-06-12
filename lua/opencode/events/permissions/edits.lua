@@ -20,6 +20,25 @@ function M.diff(event, server)
 
     local diff = event.properties.metadata.diff
 
+    local filepath = event.properties.metadata.filepath
+    local absolute_filepath = vim.fn.fnamemodify(filepath, ":p")
+
+    -- Opencode sends the absolute path sometimes with the HOME and sometimes without
+    -- It has something to do with the path of the opencode server cwd wrt the file/directory
+    if vim.fn.filereadable(absolute_filepath) == 1 then
+      filepath = absolute_filepath
+    elseif vim.env.HOME and vim.env.HOME ~= "" then
+      local home_filepath = vim.fs.normalize(vim.fs.joinpath(vim.env.HOME, filepath))
+      if vim.fn.filereadable(home_filepath) == 1 then
+        filepath = home_filepath
+      end
+    end
+
+    if vim.fn.filereadable(filepath) ~= 1 then
+      vim.notify("Cannot resolve OpenCode edit target file: " .. filepath, vim.log.levels.ERROR, { title = "opencode" })
+      return
+    end
+
     local patch_filepath = vim.fn.tempname() .. ".patch"
     if vim.fn.writefile(vim.split(diff, "\n"), patch_filepath) ~= 0 then
       vim.notify(
@@ -30,12 +49,12 @@ function M.diff(event, server)
       return
     end
 
-    local filepath = vim.fn.fnameescape(event.properties.metadata.filepath)
+    filepath = vim.fn.fnameescape(filepath)
 
     -- Diffing changes some of the buffer's display options (namely folding) to make it easier to compare side-by-side,
     -- so open the target file in a new tab first.
     vim.cmd("tabnew " .. filepath)
-    -- FIX: Sometimes rejects? Or displays no changes? Particularly with a single inline change. Malformed patch?
+    --  FIX: Errors in diff occur due to opencode's trimDiff function
     vim.cmd("silent vert diffpatch " .. patch_filepath)
 
     local diff_buff = vim.api.nvim_get_current_buf()
