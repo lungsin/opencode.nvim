@@ -277,6 +277,17 @@ Input a prompt for OpenCode.
   - Press `<Tab>` to trigger built-in completion.
   - Provided by in-process LSP when using [snacks.input](https://github.com/folke/snacks.nvim/blob/main/docs/input.md).
 
+By default, submits to the most recently updated non-archived root session for Neovim's current directory.
+Pass `session = "new"` to create a fresh session when you submit the prompt:
+
+```lua
+require("opencode").ask("Explain @this", { session = "new" })
+require("opencode").ask("Explain @this", { session = "latest" }) -- Default
+require("opencode").ask(nil, { session = "new" }) -- Start with an empty input
+```
+
+Cancelling the input does not create a session. With `session = "latest"`, an existing session is required.
+
 ### Select — `require("opencode").select()`
 
 Select from all opencode.nvim functionality.

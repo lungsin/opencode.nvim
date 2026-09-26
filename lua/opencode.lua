@@ -17,13 +17,14 @@ end
 ---   - Provided by in-process LSP when using [snacks.input](https://github.com/folke/snacks.nvim/blob/main/docs/input.md).
 ---
 ---@param default? string Text to pre-fill the input with.
-function M.ask(default)
+---@param opts? opencode.prompt.Opts Session to send the submitted prompt to.
+function M.ask(default, opts)
   require("opencode.server.discovery")
     .get()
     :next(function(server)
       local context = require("opencode.context").new(server)
       return require("opencode.ui.ask").ask(default, context):next(function(input)
-        return require("opencode.api.prompt").prompt(input, context)
+        return require("opencode.api.prompt").prompt(input, context, opts)
       end)
     end)
     :catch(on_error)
